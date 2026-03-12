@@ -7,6 +7,7 @@ import com.wdenberg.docegestao.ingredient.entity.Ingredient;
 import com.wdenberg.docegestao.ingredient.mapper.IngredientMapper;
 import com.wdenberg.docegestao.ingredient.repository.IngredientRepository;
 import com.wdenberg.docegestao.user.repository.UserRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,4 +90,6 @@ public class IngredientService {
     private BigDecimal calculateCostPerUnit(BigDecimal purchasePrice, BigDecimal quantity) {
         return purchasePrice.divide(quantity, 6, RoundingMode.HALF_UP);
     }
+
+
 }

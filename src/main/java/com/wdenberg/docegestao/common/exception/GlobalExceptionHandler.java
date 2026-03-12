@@ -13,8 +13,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ProblemDetail> handleIllegalArgument(IllegalArgumentException ex) {
+    @ExceptionHandler(ResouceNotFoundExceptio.class)
+    public ResponseEntity<ProblemDetail> handleIllegalArgument(ResouceNotFoundExceptio ex) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         problem.setTitle("Erro de negócio");
         problem.setDetail(ex.getMessage());
@@ -33,5 +33,13 @@ public class GlobalExceptionHandler {
         response.put("errors", fields);
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ProblemDetail> handleBusiness(BusinessException ex) {
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNPROCESSABLE_ENTITY);
+        problem.setTitle("Regra de negócio violada");
+        problem.setDetail(ex.getMessage());
+        return ResponseEntity.unprocessableEntity().body(problem);
     }
 }

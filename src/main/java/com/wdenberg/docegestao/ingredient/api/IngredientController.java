@@ -57,4 +57,6 @@ public class IngredientController {
         ingredientService.delete(id, currentUser.id());
         return ResponseEntity.noContent().build();
     }
+
+
 }
