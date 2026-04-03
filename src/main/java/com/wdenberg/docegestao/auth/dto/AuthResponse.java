@@ -6,6 +6,7 @@ import java.util.Set;
 
 public record AuthResponse(
         String accessToken,
+        String refreshToken,
         String tokenType,
         Long expiresIn,
         String name,

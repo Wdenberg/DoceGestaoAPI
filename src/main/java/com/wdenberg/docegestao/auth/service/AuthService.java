@@ -1,7 +1,6 @@
 package com.wdenberg.docegestao.auth.service;
-import com.wdenberg.docegestao.auth.dto.AuthResponse;
-import com.wdenberg.docegestao.auth.dto.LoginRequest;
-import com.wdenberg.docegestao.auth.dto.RegisterRequest;
+import com.wdenberg.docegestao.auth.dto.*;
+import com.wdenberg.docegestao.security.config.SecurityProperties;
 import com.wdenberg.docegestao.security.jwt.JwtService;
 import com.wdenberg.docegestao.user.entity.RoleName;
 import com.wdenberg.docegestao.user.entity.User;
@@ -25,16 +24,21 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
+    private final RefreshTokenService refreshTokenService;
+    private final SecurityProperties securityProperties;
+
     public AuthService(UserRepository userRepository,
                        RoleRepository roleRepository,
                        PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager,
-                       JwtService jwtService) {
+                       JwtService jwtService, RefreshTokenService refreshTokenService, SecurityProperties securityProperties) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
+        this.securityProperties = securityProperties;
     }
 
     @Transactional
@@ -53,7 +57,8 @@ public class AuthService {
         user.getRoles().add(roleUser);
 
         user = userRepository.save(user);
-        return buildAuthResponse(user);
+        var refreshToken = refreshTokenService.create(user);
+        return buildAuthResponse(user, refreshToken.getToken());
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -64,10 +69,42 @@ public class AuthService {
         var user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("Credenciais inválidas"));
 
-        return buildAuthResponse(user);
+        var refreshToken = refreshTokenService.create(user);
+        return buildAuthResponse(user, refreshToken.getToken());
     }
 
-    private AuthResponse buildAuthResponse(User user) {
+    
+    @Transactional(readOnly = true)
+    public TokenResponse refresh(RefreshTokenRequest requestToken){
+        var refreshToken = refreshTokenService.validate(requestToken.refreshToken());
+        var user = refreshToken.getUser();
+
+       String accessToken = jwtService.generateToken(
+               user.getEmail(), 
+               Map.of(
+                       "userId", user.getId().toString(),
+                       "name", user.getName(),
+                       "roles", user.getRoles().stream().map(r ->
+                           r.getName().name()
+                       ).toList()
+               )
+       );
+       return  new TokenResponse(
+               accessToken,
+               refreshToken.getToken(),
+               "Bearer",
+               securityProperties.accesTokenExpirationMinutes() * 60
+       );
+
+    }
+
+    @Transactional
+    public void logout(String refreshToken) {
+        refreshTokenService.revoke(refreshToken);
+    }
+
+
+    private AuthResponse buildAuthResponse(User user, String refreshToken) {
         Set<String> roles = user.getRoles().stream()
                 .map(role -> role.getName().name())
                 .collect(java.util.stream.Collectors.toSet());
@@ -82,6 +119,14 @@ public class AuthService {
                 )
         );
 
-        return new AuthResponse(token, "Bearer", 900L, user.getName(), user.getEmail(), roles);
+        return new AuthResponse(
+                token,
+                refreshToken,
+                "Bearer",
+                securityProperties.accesTokenExpirationMinutes()  * 60,
+                user.getName(),
+                user.getEmail(),
+                roles
+        );
     }
 }

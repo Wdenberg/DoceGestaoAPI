@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "security.jwt")
 public record SecurityProperties(
         String secret,
-        long accesTokenExpirationMinutes
+        long accesTokenExpirationMinutes,
+        long refreshTokenExpirationDays
 ) {
 }
