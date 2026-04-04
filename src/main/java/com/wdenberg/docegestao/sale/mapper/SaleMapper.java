@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface SaleMapper {
 
-    @Mapping(target = "client_id", source = "client.id")
+    @Mapping(target = "clientId", source = "client.id")
     @Mapping(target = "clientName", source = "client.name")
     SaleResponse toResponse(Sale sale);
 

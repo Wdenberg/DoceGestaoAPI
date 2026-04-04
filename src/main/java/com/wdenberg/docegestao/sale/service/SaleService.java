@@ -49,10 +49,10 @@ public class SaleService {
         sale.setDiscount(request.discount() == null ? BigDecimal.ZERO : request.discount());
         sale.setPaymentMethod(request.paymentMethod());
         sale.setNotes(request.notes());
-        sale.setSaleStatus(SaleStatus.PENDING);
+        sale.setStatus(SaleStatus.PENDING);
 
         if (request.clientId() != null) {
-            var client = clientRepository.findByIdUser_Id(request.clientId(), userId)
+            var client = clientRepository.findByIdAndUser_Id(request.clientId(), userId)
                     .orElseThrow(() -> new ResouceNotFoundExceptio("Cliente não encontrado"));
             sale.setClient(client);
         }
@@ -106,7 +106,7 @@ public class SaleService {
     public SaleResponse updateStatus(UUID id, UUID userId, SaleStatus status) {
         Sale sale = saleRepository.findByIdAndUser_Id(id, userId)
                 .orElseThrow(() -> new ResouceNotFoundExceptio("Venda não encontrada"));
-        sale.setSaleStatus(status);
+        sale.setStatus(status);
         return saleMapper.toResponse(saleRepository.save(sale));
     }
 

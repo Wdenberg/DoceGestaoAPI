@@ -1,6 +1,7 @@
 package com.wdenberg.docegestao.client.entity;
 
 
+import com.wdenberg.docegestao.common.config.BaseEntity;
 import com.wdenberg.docegestao.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.time.OffsetDateTime;
 @Setter
 @Entity
 @Table(name = "clients")
-public class Client {
+public class Client extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

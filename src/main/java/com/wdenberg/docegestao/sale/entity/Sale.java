@@ -33,9 +33,9 @@ public class Sale extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private SaleStatus saleStatus;
+    private SaleStatus status;
 
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(name = "sub_total",nullable = false, precision = 12, scale = 2)
     private BigDecimal subTotal = BigDecimal.ZERO;
 
     @Column(nullable = false, precision = 12, scale = 2)

@@ -4,7 +4,7 @@ CREATE TABLE sales (
     client_id UUID,
     sale_date DATE NOT NULL,
     status VARCHAR(30) NOT NULL,
-    subtotal NUMERIC(12,2) NOT NULL DEFAULT 0,
+    sub_total NUMERIC(12,2) NOT NULL DEFAULT 0,
     discount NUMERIC(12,2) NOT NULL DEFAULT 0,
     total_amount NUMERIC(12,2) NOT NULL DEFAULT 0,
     payment_method VARCHAR(40),

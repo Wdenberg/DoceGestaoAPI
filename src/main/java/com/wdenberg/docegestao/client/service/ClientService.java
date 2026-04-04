@@ -54,7 +54,7 @@ public class ClientService {
 
     @Transactional
     public ClientResponse findById(UUID id, UUID userId){
-        return clientRepository.findByIdUser_Id(id, userId)
+        return clientRepository.findByIdAndUser_Id(id, userId)
                 .map(clientMapper::toResponse)
                 .orElseThrow(() -> new ResouceNotFoundExceptio("Cliente não encontrado"));
     }
@@ -62,7 +62,7 @@ public class ClientService {
 
     @Transactional
     public ClientResponse update(UUID id, UUID userId, ClientRequest request){
-        Client client = clientRepository.findByIdUser_Id(id, userId)
+        Client client = clientRepository.findByIdAndUser_Id(id, userId)
                 .orElseThrow(() -> new ResouceNotFoundExceptio("Cliente não encontrado"));
 
         client.setName(request.name());
@@ -78,7 +78,7 @@ public class ClientService {
 
     @Transactional
     public void delete(UUID id, UUID userId){
-        Client client = clientRepository.findByIdUser_Id(id, userId)
+        Client client = clientRepository.findByIdAndUser_Id(id, userId)
                 .orElseThrow(() -> new ResouceNotFoundExceptio("Cliente não encontrado"));
 
         clientRepository.delete(client);

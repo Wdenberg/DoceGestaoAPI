@@ -1,6 +1,7 @@
 package com.wdenberg.docegestao.auth;
 
 
+import com.wdenberg.docegestao.common.config.BaseEntity;
 import com.wdenberg.docegestao.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,8 +12,8 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "refresh_token")
-public class RefreshToken {
+@Table(name = "refresh_tokens")
+public class RefreshToken extends BaseEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
