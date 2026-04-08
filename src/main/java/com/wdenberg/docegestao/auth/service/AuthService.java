@@ -2,6 +2,7 @@ package com.wdenberg.docegestao.auth.service;
 import com.wdenberg.docegestao.auth.dto.*;
 import com.wdenberg.docegestao.security.config.SecurityProperties;
 import com.wdenberg.docegestao.security.jwt.JwtService;
+import com.wdenberg.docegestao.user.entity.Role;
 import com.wdenberg.docegestao.user.entity.RoleName;
 import com.wdenberg.docegestao.user.entity.User;
 import com.wdenberg.docegestao.user.repository.RoleRepository;
@@ -47,19 +48,35 @@ public class AuthService {
             throw new IllegalArgumentException("Email já cadastrado");
         }
 
-        var roleUser = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new IllegalStateException("Role ROLE_USER não encontrada"));
-
-        User user = new User();
+        final User user = new User();
         user.setName(request.name());
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.getRoles().add(roleUser);
 
-        user = userRepository.save(user);
-        var refreshToken = refreshTokenService.create(user);
+        // Se vierem roles no request, buscamos elas. Se não, usamos ROLE_USER por padrão.
+        if (request.roles() != null && !request.roles().isEmpty()) {
+            request.roles().forEach(roleNameStr -> {
+                // Converte a String "ADMIN" ou "ROLE_ADMIN" para o Enum RoleName
+                RoleName name = roleNameStr.startsWith("ROLE_")
+                        ? RoleName.valueOf(roleNameStr)
+                        : RoleName.valueOf("ROLE_" + roleNameStr.toUpperCase());
+
+                Role role = roleRepository.findByName(name)
+                        .orElseThrow(() -> new IllegalStateException("Role " + name + " não encontrada"));
+                user.getRoles().add(role);
+            });
+        } else {
+            // Padrão caso o campo roles venha vazio no JSON
+            Role defaultRole = roleRepository.findByName(RoleName.ROLE_USER)
+                    .orElseThrow(() -> new IllegalStateException("Role ROLE_USER não encontrada"));
+            user.getRoles().add(defaultRole);
+        }
+
+        User savedUser = userRepository.save(user);
+        var refreshToken = refreshTokenService.create(savedUser);
         return buildAuthResponse(user, refreshToken.getToken());
     }
+
 
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
@@ -93,7 +110,7 @@ public class AuthService {
                accessToken,
                refreshToken.getToken(),
                "Bearer",
-               securityProperties.accesTokenExpirationMinutes() * 60
+               securityProperties.accessTokenExpirationMinutes() * 60
        );
 
     }
@@ -123,7 +140,7 @@ public class AuthService {
                 token,
                 refreshToken,
                 "Bearer",
-                securityProperties.accesTokenExpirationMinutes()  * 60,
+                securityProperties.accessTokenExpirationMinutes()  * 60,
                 user.getName(),
                 user.getEmail(),
                 roles

@@ -84,8 +84,7 @@ public class RecipeController {
     @Operation(summary = "Remover Receita")
     @DeleteMapping("/{id}")
     public ResponseEntity<RecipeResponse> delete(
-            @PathVariable UUID id,
-            @Valid @RequestBody RecipeRequest request
+            @PathVariable UUID id
     ){
         var currentUser = authenticatedUserService.getCurrentUser();
         recipeService.delete(id, currentUser.id());

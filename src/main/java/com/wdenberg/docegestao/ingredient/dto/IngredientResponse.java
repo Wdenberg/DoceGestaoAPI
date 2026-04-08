@@ -10,7 +10,7 @@ public record IngredientResponse(
         String name,
         BigDecimal quantity,
         String unitMeasure,
-        BigDecimal purchesePrice,
+        BigDecimal purchasePrice,
         BigDecimal costPerUnit,
         String supplier,
         boolean active,

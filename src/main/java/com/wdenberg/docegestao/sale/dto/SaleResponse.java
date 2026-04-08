@@ -21,7 +21,7 @@ public record SaleResponse(
         String paymentMethod,
         String notes,
         List<SaleItemResponse> items,
-        OffsetDateTime createdAT,
+        OffsetDateTime createdAt,
         OffsetDateTime updatedAt
 
 
