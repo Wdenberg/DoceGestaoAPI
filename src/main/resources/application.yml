@@ -8,9 +8,9 @@ spring:
     name: doce-gestao-api
 
   datasource:
-    url: jdbc:postgresql://host.docker.internal:5432/doce_gestao
-    username: ${DB_USER:postgres}
-    password: ${DB_PASS:3636}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${POSTGRES_PASSWORD}
+    password: ${POSTGRES_USER}
     driver-class-name: org.postgresql.Driver
 
   jpa:
