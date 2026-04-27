@@ -30,7 +30,7 @@ public class RefreshTokenService {
         refreshToken.setUser(user);
         refreshToken.setToken(UUID.randomUUID() + "-" + UUID.randomUUID());
 
-        refreshToken.setExpiresAt(OffsetDateTime.now().plusDays(securityProperties.accesTokenExpirationMinutes()));
+        refreshToken.setExpiresAt(OffsetDateTime.now().plusDays(securityProperties.accessTokenExpirationMinutes()));
         refreshToken.setRevoked(false);
 
 

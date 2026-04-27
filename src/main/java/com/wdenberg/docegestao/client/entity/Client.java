@@ -36,7 +36,7 @@ public class Client extends BaseEntity {
     private String notes;
 
     @Column(name = "total_orders", nullable = false)
-    private Integer totalOrders;
+    private Integer totalOrders = 0;
 
     @Column(name = "total_spent", nullable = false, precision = 10, scale = 2, columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")
     private BigDecimal totalSpent = BigDecimal.ZERO;

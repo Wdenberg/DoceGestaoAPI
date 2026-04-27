@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -44,6 +45,9 @@ public class ClientService {
         client.setNotes(request.notes());
         client.setActive(request.active() == null ? Boolean.TRUE : request.active());
 
+        client.setTotalOrders(0);
+        client.setTotalSpent(BigDecimal.ZERO);
+
         return clientMapper.toResponse(clientRepository.save(client));
     }
 
@@ -72,6 +76,8 @@ public class ClientService {
         client.setNotes(request.notes());
         client.setActive(request.active() == null ? client.getActive() : request.active());
 
+        client.setTotalOrders(0);
+        client.setTotalSpent(BigDecimal.ZERO);
 
         return clientMapper.toResponse(clientRepository.save(client));
     }

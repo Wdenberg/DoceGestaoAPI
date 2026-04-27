@@ -8,9 +8,9 @@ spring:
     name: doce-gestao-api
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/doce_gestao
-    username: postgres
-    password: 3636
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${POSTGRES_PASSWORD}
+    password: ${POSTGRES_USER}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -42,3 +42,4 @@ security:
   jwt:
     secret: 1234567890123456789012345678901234567890123456789012345678901234
     access-token-expiration-minutes: 15
+    refresh-token-expiration-days: 7

@@ -16,7 +16,7 @@ public record ClientResponse(
         BigDecimal totalSpent,
         OffsetDateTime lastOrderAt,
         Boolean active,
-        OffsetDateTime createdAr,
+        OffsetDateTime createdAt,
         OffsetDateTime updatedAt
 
 ) { }

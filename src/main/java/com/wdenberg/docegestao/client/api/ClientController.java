@@ -40,7 +40,7 @@ public class ClientController {
     public ResponseEntity<Page<ClientResponse>> findAll(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Boolean active,
-            @PageableDefault(size = 10, sort = "cratedAt", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)Pageable pageable
             ){
         var currentUser = authenticatedUserService.getCurrentUser();
         return ResponseEntity.ok(clientService.findAll(currentUser.id(), name, active, pageable));

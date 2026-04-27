@@ -26,7 +26,7 @@ public class JwtService {
 
     public String generateToken(String subject, Map<String, Object> claims){
         Instant now = Instant.now();
-        Instant expiration = now.plus(securityProperties.accesTokenExpirationMinutes(), ChronoUnit.MINUTES);
+        Instant expiration = now.plus(securityProperties.accessTokenExpirationMinutes(), ChronoUnit.MINUTES);
 
         return Jwts.builder()
                 .claims(claims)
